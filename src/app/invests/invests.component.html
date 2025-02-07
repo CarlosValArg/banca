@@ -1,0 +1,43 @@
+<div class="investments">
+  <h1>Seleccione la cuenta para realizar una inversión</h1>
+
+  <div class="actions">
+    <button class="btn btn-light mb-2 me-2" (click)="openInvestmentModal(investmentModal)">
+      Realizar Inversión
+    </button>
+  </div>
+
+  <select class="form-select" [(ngModel)]="selectedAccount">
+    <option *ngFor="let account of accounts" [ngValue]="account">{{ account.accountName }} - {{ account.balance | currency:'MXN' }}</option>
+  </select>
+
+  <ng-template #investmentModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Realizar Inversión</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-3">
+        <label for="amount" class="form-label">Cantidad a invertir</label>
+        <input type="number" id="amount" class="form-control" [(ngModel)]="investmentAmount" name="amount" required />
+      </div>
+      <div class="mb-3">
+        <label for="investRate" class="form-label">Tasa de inversión</label>
+        <input type="number" id="investRate" class="form-control" [(ngModel)]="investmentRate" name="investRate" required />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+      <button type="button" class="btn btn-primary" (click)="submitInvestment(investmentAmount, investmentRate)">Realizar inversión</button>
+    </div>
+  </ng-template>
+
+  <div class="investment-history">
+    <h2>Historial de Inversiones</h2>
+    <div *ngFor="let record of investmentHistory" class="investment-record">
+      <span>Monto: {{ record.amount | currency:'MXN' }}</span>
+      <span>Ganancia: {{ record.profit | currency:'MXN' }}</span>
+      <span>Fecha: {{ record.timestamp | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+    </div>
+  </div>
+</div>
