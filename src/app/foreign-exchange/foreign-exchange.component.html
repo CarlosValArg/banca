@@ -1,34 +1,62 @@
 <div class="foreign-exchange">
   <h1>Intercambio de divisas</h1>
-  <div class="row">
-    <div class="col">
-      <label for="fromCurrency">Divisa de origen</label>
-      <select class="form-select" id="fromCurrency" [(ngModel)]="fromCurrency">
-        <option value="">Seleccione una divisa</option>
-        <option *ngFor="let currency of currencies" [value]="currency.code">{{ currency | currencyDescriptor }}</option>
-      </select>
-    </div>
-    <div class="col">
-      <label for="toCurrency">Divisa a</label>
-      <select class="form-select" id="toCurrency" [(ngModel)]="toCurrency">
-        <option value="">Seleccione una divisa</option>
-        <option *ngFor="let currency of currencies" [value]="currency.code">{{ currency | currencyDescriptor }}</option>
-      </select>
-    </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" (click)="openBuyModal(buyCurrencyModal)">
+      Comprar Divisas
+   </button>   
   </div>
-  <div class="row spacer">
-    <div class="col">
-      <div class="actions">
-        <button class="btn btn-primary" (click)="calculate()">Calcular</button>
+
+  <select class="form-select" [(ngModel)]="selectedAccount">
+    <option *ngFor="let account of accounts" [ngValue]="account">{{ account.accountName }} - {{ account.balance | currency:'MXN' }}</option>
+  </select>
+  
+  <ng-template #buyCurrencyModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title">Realizar Compra de Divisas</h4>
+      <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-3">
+        <label for="fromCurrency" class="form-label">Divisa de origen</label>
+        <select class="form-select" id="fromCurrency" [(ngModel)]="fromCurrency">
+          <option value="">Seleccione una divisa</option>
+          <option *ngFor="let currency of currencies" [value]="currency.code">{{ currency.name }}</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="toCurrency" class="form-label">Divisa a comprar</label>
+        <select class="form-select" id="toCurrency" [(ngModel)]="toCurrency">
+          <option value="">Seleccione una divisa</option>
+          <option *ngFor="let currency of currencies" [value]="currency.code">{{ currency.name }}</option>
+        </select>
+      </div>
+  
+      <div class="mb-3">
+        <label for="amountToBuy" class="form-label">Cantidad a comprar</label>
+        <input type="number" id="amountToBuy" class="form-control" [(ngModel)]="amountToBuy" required />
       </div>
     </div>
-  </div>
-  <div class="row spacer">
-    <div class="col">
-      <div class="result">
-        <h2>Resultado</h2>
-        <p *ngFor="let result of results">{{ result.amount | currency: result.currency }} </p>
-      </div>
+  
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="modal.close()">Cancelar</button>
+      <button type="button" class="btn btn-primary" (click)="buy()">Realizar compra</button>
+    </div>
+  </ng-template>  
+
+  <div class="investment-history">
+    <h2>Historial de Compras</h2>
+    <div *ngFor="let record of transactionHistory" class="investment-record">
+      <span>Monto: {{ record.amountToBuy }} {{ record.fromCurrency }}</span>
+      <span>Convertido a: {{ record.exchangedAmount }} {{ record.toCurrency }}</span>
+      <span>Cuenta: {{ record.account }}</span>
+      <span>Fecha: {{ record.date }}</span>
     </div>
   </div>
+</div>
+
+<div class="destination-account">
+  <h2>Cuenta de Destino</h2>
+  <p>Saldo: {{ getDestinationAccountBalance() }} {{ getDestinationAccountCurrency() }}</p>
 </div>
